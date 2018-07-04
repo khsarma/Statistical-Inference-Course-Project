@@ -1,0 +1,71 @@
+---
+title: "Inferential Analysis of ToothGrowth data set"
+author: "khsarma"
+date: "July 4, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Overview
+#### 1a Load ToothGrowth Data set
+``` {r, include = FALSE, results = FALSE}
+library(ggplot2)
+library(dplyr)
+```
+Load ToothGrowth data set from datasets library
+```{r}
+library(datasets)
+data(ToothGrowth)
+```
+
+#### 1b Exploring Data set
+Let's check the structure of the data set.
+```{r}
+str(ToothGrowth)
+```
+At supp factor level, let's check the count of obervations against dose variable.
+```{r}
+table(ToothGrowth$supp, ToothGrowth$dose)
+```
+
+#### 2 Summary of Data
+Summaries of the three variables.
+```{r}
+summary(ToothGrowth)
+```
+
+Using box plot, check the association of len with dose
+```{r}
+ggplot(ToothGrowth, aes(x = factor(dose), y = len, fill = factor(dose))) +
+  geom_boxplot()
+```
+
+From the graph, it can be observed that with increase in dosage length increases.
+Using box plot, check the association of len with supp
+```{r}
+ggplot(ToothGrowth, aes(x = supp, y = len, fill = supp)) +
+  geom_boxplot()
+```
+
+From the graph, it can be observed that Orange Juice helped in more length when compared to Vitamin C supplement.
+Using bar graph, check the association of len with supp and dose together
+```{r}
+ggplot(ToothGrowth, aes(x=factor(dose), y=len, fill=supp)) + geom_bar(stat='identity', position='dodge')
+```
+
+From the graph, it can be observed that Orange juice contributed to more increase in length for 0.5 and 1.0 dosages. And Vitamin C supplement contributed to more increase in length for 2.0 dosage.
+
+#### 3 Comparison of Tooth growth by Supp and Dose
+```{r}
+t.test(ToothGrowth$len, ToothGrowth$dose, paired = F, var.equal = F)
+```
+```{r}
+t.test(ToothGrowth$len, ToothGrowth$dose, paired = F, var.equal = F)
+```
+
+#### 4 Conclusions and Assumptions
+##### 4a Assumptions
+##### 4b Conclusions

@@ -1,0 +1,84 @@
+---
+title: "Investigation of Exponential Distribution in R and Comparison with Central Limit Theorem"
+author: "khsarma"
+date: "July 3, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Overview
+In this project, we are going to simulate Exponential distribution in R and analyse below points:
+1. Show the sample mean and compare it to the theoretical mean of the distribution.
+2. Show how variable the sample is (via variance) and compare it to the theoretical variance of the distribution.
+3. Show that the distribution is approximately normal.
+
+### Simulations
+For simulation purpose, we are going to assume few details:
+1. Rate parameter lambda is set as 0.2
+2. Consider 40 exponentials
+3. Consider number of simulations as 1000
+```{r}
+set.seed(7)
+lambda <- 0.2
+noSim <- 1000
+noExp <- 40
+```
+
+### Sample Mean versus Theoretical Mean
+#### Theoretical Mean
+Theoretical Mean is considered as 1/lambda
+```{r}
+theoryMean <- 1/lambda
+theoryMean
+```
+
+#### Sample Mean
+Generating 1000 simulations of 40 exponentials:
+```{r}
+expMat <- matrix(rexp(noExp*noSim, lambda), noSim)
+dim(expMat)
+```
+Calculating Sample mean
+```{r}
+expMatMean <- apply(expMat, 1, mean)
+expMean <- mean(expMatMean)
+```
+Hence, Sample mean `r round(expMean,3)` is approximately equal to Theoretical mean `r round(theoryMean,3)`.
+
+### Sample Variance versus Theoretical Variance
+#### Theoretical Variance
+Theoretical Variance is considered as (1/lambda)^2/(n)
+```{r}
+theoryVar <- (1/lambda)^2/(noExp)
+theoryVar
+```
+
+#### Sample Variance
+Calculating Sample variance
+```{r}
+expVar <- var(expMatMean)
+```
+Hence, Sample variance `r round(expVar,3)` is approximately equal to Theoretical variance `r round(theoryVar,3)`.
+
+### Distribution of averages of 40 Random Exponential variables
+Let us create a density histogram of the averages of 40 Random variables that we simulated.
+``` {r, include = FALSE, results = FALSE}
+library(ggplot2)
+```
+```{r}
+ggplot(data.frame(x = expMatMean), aes(x = x)) +
+  geom_histogram(aes(y = ..density..), 
+                binwidth = 0.2, fill = "steelblue", color = "white") +
+  stat_function(fun = dnorm, color = 'black',
+                args = list(mean = expMean, 
+                                     sd = sqrt(theoryVar))) + 
+  geom_vline(xintercept = expMean, size = 1) + 
+  xlab("Means") + 
+  ylab("Density") + 
+  ggtitle("Distribution of Averages of 1000 samples of 40 Random Exponential variables")
+```
+
+From the graph it can be observed that the distribution is approximately normal.
